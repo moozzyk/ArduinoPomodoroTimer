@@ -20,7 +20,7 @@ void setup()
 }
 
 byte tcnt2;
-unsigned long time = 0; // 86390000;
+unsigned long time = 1500000; // 25 minutes
 
 // Credits for the interrupt setup routine:
 // http://popdevelop.com/2010/04/mastering-timer-interrupts-on-the-arduino/
@@ -66,18 +66,14 @@ ISR(TIMER2_OVF_vect) {
   /* Reload the timer */  
   TCNT2 = tcnt2;
   
-  time++;
-  time = time % 86400000; 
+  if(time > 0)
+  {
+    time--;
+  }
 }  
 
 void loop() 
 {
-  /*
-  unsigned long t = (unsigned long)(time/1000);
-  
-  DisplayTime((byte)(t / 3600), (byte)((t / 60) % 60), (byte)(t % 60));
-  */
-
   unsigned long t = (unsigned long)(time/1000);  
   uint8_t minutes = (byte)((t / 60) % 60);
   uint8_t seconds = (byte)(t % 60);
