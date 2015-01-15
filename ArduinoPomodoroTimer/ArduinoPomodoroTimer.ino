@@ -1,6 +1,10 @@
 const int clock = 7;
 const int data = 8;
 
+const uint8_t red = 5;
+const uint8_t green = 9;
+const uint8_t blue = 6;
+
                      /*0*/ /*1*/ /*2*/ /*3*/ /*4*/ /*5*/ /*6*/ /*7*/ /*8*/ /*9*/ 
 uint8_t digits[] = { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f }; 
 
@@ -11,8 +15,12 @@ void setup()
   pinMode(clock, OUTPUT);
   pinMode(data, OUTPUT);
   
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);
+
   start();
-  writeValue(0x8c);
+  writeValue(0x8f);
   stop();
   
   // clear display
@@ -20,7 +28,8 @@ void setup()
 }
 
 byte tcnt2;
-unsigned long time = 1500000; // 25 minutes
+//unsigned long time = 1500000; // 25 minutes
+unsigned long time = 5000; // 5 seconds
 
 // Credits for the interrupt setup routine:
 // http://popdevelop.com/2010/04/mastering-timer-interrupts-on-the-arduino/
@@ -78,7 +87,18 @@ void loop()
   uint8_t minutes = (byte)((t / 60) % 60);
   uint8_t seconds = (byte)(t % 60);
   
-  write(digits[minutes / 10], digits[minutes % 10] | ((seconds & 0x01) << 7) , digits[seconds / 10], digits[seconds % 10]);
+  if(t > 0)
+  {
+    digitalWrite(red, HIGH);
+    digitalWrite(green, LOW);
+  }
+  else
+  {
+    digitalWrite(red, LOW);
+    digitalWrite(green, HIGH);
+  }
+
+   write(digits[minutes / 10], digits[minutes % 10] | ((seconds & 0x01) << 7) , digits[seconds / 10], digits[seconds % 10]);
 }
 
 void write(uint8_t first, uint8_t second, uint8_t third, uint8_t fourth)
