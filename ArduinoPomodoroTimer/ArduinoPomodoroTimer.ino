@@ -1,6 +1,11 @@
+// button pin
+const int buttonPin = 2;
+
+// display pins
 const int clock = 7;
 const int data = 8;
 
+// LED pins
 const uint8_t red = 5;
 const uint8_t green = 9;
 const uint8_t blue = 6;
@@ -10,7 +15,7 @@ uint8_t digits[] = { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f 
 
 void setup() 
 {
-  setupInterrupt();
+  pinMode(buttonPin, INPUT);
   
   pinMode(clock, OUTPUT);
   pinMode(data, OUTPUT);
@@ -18,6 +23,8 @@ void setup()
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
   pinMode(blue, OUTPUT);
+
+  setupInterrupt();
 
   start();
   writeValue(0x8f);
@@ -28,8 +35,7 @@ void setup()
 }
 
 byte tcnt2;
-//unsigned long time = 1500000; // 25 minutes
-unsigned long time = 5000; // 5 seconds
+unsigned long time = 0;
 
 // Credits for the interrupt setup routine:
 // http://popdevelop.com/2010/04/mastering-timer-interrupts-on-the-arduino/
@@ -82,6 +88,27 @@ ISR(TIMER2_OVF_vect) {
 }  
 
 void loop() 
+{
+  handleButton();
+  displayTime();
+}
+
+void handleButton()
+{
+  // const int sprintDuration = 1500000; // 25 minutes
+  const int sprintDuration = 6000;
+  static uint8_t previousButtonState = LOW;
+
+  uint8_t buttonState = digitalRead(buttonPin);
+  if(buttonState == LOW && previousButtonState == HIGH)
+  {
+    time = sprintDuration;
+  }
+
+  previousButtonState = buttonState;
+}
+
+void displayTime()
 {
   unsigned long t = (unsigned long)(time/1000);  
   uint8_t minutes = (byte)((t / 60) % 60);
