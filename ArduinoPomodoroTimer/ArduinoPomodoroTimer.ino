@@ -2,8 +2,8 @@
 const int buttonPin = 2;
 
 // display pins
-const int clock = 7;
-const int data = 8;
+const int clock = 8;
+const int data = 7;
 
 // LED pins
 const uint8_t red = 5;
@@ -95,8 +95,7 @@ void loop()
 
 void handleButton()
 {
-  // const int sprintDuration = 1500000; // 25 minutes
-  const int sprintDuration = 6000;
+  const unsigned long sprintDuration = 1500000; // 25 minutes
   static uint8_t previousButtonState = LOW;
 
   uint8_t buttonState = digitalRead(buttonPin);
